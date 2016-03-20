@@ -1,0 +1,28 @@
+extends layout
+
+block content
+	script(type='text/javascript').
+		var doAction = function(){
+			var stud = document.getElementById('studentID').value;
+			var clsID = document.getElementById('classID').value;
+			window.location.href = '/' +  clsID + '/' + stud;
+		}
+
+	div(class='container')
+		div(class='jumbotron')
+			center
+				h1= title
+		center
+			div(class='row')
+				div(class='col-sm-6')
+					h2
+						input(type='text', id='studentID',name='studentID', placeholder='Student ID', value=valID)
+				div(class='col-sm-6')
+					h2
+						input(type='text', id='classID' , name='classID', placeholder='Class ID', value=valueID)
+				br
+				br			
+				div(class='col-sm-12')
+					h2
+						button#btnSubmit(type="CreateBoard",value='Insert',onclick="doAction();") Start
+

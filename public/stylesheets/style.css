@@ -1,0 +1,30 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+.im-centered { margin: auto; max-width: 300px;}
+
+.divLeft {
+    float: left;
+}
+
+.divRight {
+    float:right;
+}
+.newDivLeft{
+	float: left;
+    display: inline-block;
+    clear: left;
+}
+
+#left{
+    float: left;
+    margin-right: 40px;
+}
+#right{
+   float: left;
+}
