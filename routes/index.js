@@ -4,8 +4,16 @@ var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var db = require('../db.js')
 var defaultParams = [
-
 ];
+
+var defaultInput = [
+  "Temperature",
+  "Concentration",  
+  "Feed rate",  
+  "Pressure",
+  "Time"
+];
+
 router.use(cookieParser());
 router.use(expressSession({secret:'546dxfgcdsy54'}));
 
@@ -109,7 +117,7 @@ router.post('/CreateNewClass', restrict ,function(req, res){
       if(docs.length == 0 || docs == undefined){ //check if name isn't in use
         var parsed = JSON.parse(req.body.students);
         collection.insert({instructorID:creator,classID:req.body.classID, 
-          budget:req.body.budget, students: parsed, params:defaultParams},function(e,docs){ 
+          budget:req.body.budget, students: parsed, inputParams: defaultInput, params:defaultParams},function(e,docs){ 
           res.redirect("/ClassList")
         });
       } else {
@@ -203,7 +211,8 @@ router.get('/Experiment/:classID/:studentID', function(req, res) {
                 if(element.studentID == req.params.studentID){
                   res.render('Experiment', {
                       "title": 'Class ' + req.params.classID,
-                      "budget": element.budgetLeft
+                      "budget": element.budgetLeft,
+                      "inputParams": docs[0].inputParams
                   });
                   notFound = false;
                 }
@@ -214,9 +223,41 @@ router.get('/Experiment/:classID/:studentID', function(req, res) {
     });
 });
 
+router.post('/Experiment/:classID/:studentID' ,function(req, res){
+   var collection = db.classes;
+    collection.find({"classID":req.params.classID}).toArray(function(err,docs){
+        if(docs.length == 0){
+            //Not found in DB.
+            res.redirect('/StudentJoin');
+        } else {
+            var notFound = true;
+            for (var i = 0; i < docs[0].students.length; i++) {
+                var element = docs[0].students[i];
+                if(element.studentID == req.params.studentID){
+                  var theirParams = JSON.parse(req.body.inputs);
+                  var result = competeResult();
+
+                  res.render('Experiment', {
+                      "title": 'Class ' + req.params.classID,
+                      "budget": element.budgetLeft,
+                      "inputParams": docs[0].inputParams,
+                      "Result" : result
+                  });
+                  notFound = false;
+                }
+            };
+            if(notFound)
+              res.redirect('/StudentJoin');
+        }
+    });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+}); 
 
 router.get('*', function(req, res) {
   res.redirect('/');
 });
+
+var competeResult = function(){
+  return 12.15;
+}
 
 module.exports = router;

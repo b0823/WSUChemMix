@@ -1,1 +1,65 @@
 extends layout
+block content
+	script(type='text/javascript').
+		var submit = function(){
+			var inValues = []; //parse inputs here
+			inputs = document.getElementsByClassName("inputParam")
+
+			for (var i = 0; i < inputs.length; i++) {
+				if(inputs[i].value == ""){
+					alert("Incomplete Form");
+					return;
+				}
+				inValues.push(parseFloat(inputs[i].value));
+			};
+
+			var locSplit =  location.href.split("/").reverse();
+			post("/Experiment/"  + locSplit[1] + "/" + locSplit[0], {inputs:JSON.stringify(inValues)})
+		}
+		function post(path, params, method) {
+			method = method || "post"; // Set method to post by default if not specified.
+
+			// The rest of this code assumes you are not using a library.
+			// It can be made less wordy if you use one.
+			var form = document.createElement("form");
+			form.setAttribute("method", method);
+			form.setAttribute("action", path);
+
+			for(var key in params) {
+				if(params.hasOwnProperty(key)) {
+					var hiddenField = document.createElement("input");
+					hiddenField.setAttribute("type", "hidden");
+					hiddenField.setAttribute("name", key);
+					hiddenField.setAttribute("value", params[key]);
+
+					form.appendChild(hiddenField);
+				 }
+			}
+
+			document.body.appendChild(form);
+			form.submit();
+		}
+	div(class='container')
+		center
+			div(class='row')
+				div(class='col-sm-6')
+					h1
+						|Parameters
+						br
+						br
+					h3
+						div(class="col-sm-12" id="lst")
+							each cls, i in inputParams
+								h3= cls
+								input(type='text', class="inputParam" id=cls + 'input' ,name='studentID', placeholder=cls, value=inParam)
+
+				div(class='col-sm-6')
+					- if (typeof(Result) !== 'undefined'){
+					h1= "Result: " + Result
+					-}					
+					h1= "Budget Remaining : " + budget
+					br
+					br
+					h2
+						button#btnSubmit(type="Submit",value='Submit',onclick="submit();") Submit
+					
