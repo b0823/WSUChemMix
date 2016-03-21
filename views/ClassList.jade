@@ -3,6 +3,47 @@ extends layout
 
 
 block content
+	script(type='text/javascript').
+
+		var delFunc = function(){
+			var active =  document.getElementsByClassName("active");
+			if(active.length == 0 || active == undefined) return;
+			else {
+				var clsID = active[0].text;
+				post("/DeleteClass/", {"classID":clsID})
+			}
+		}
+		var edit = function(){
+			var active =  document.getElementsByClassName("active");
+			if(active.length == 0 || active == undefined) return;
+			else {
+				var clsID = active[0].text;
+				window.location.href = '/EditClass/' +  clsID;
+			}
+		}		
+		function post(path, params, method) {
+			method = method || "post"; // Set method to post by default if not specified.
+
+			// The rest of this code assumes you are not using a library.
+			// It can be made less wordy if you use one.
+			var form = document.createElement("form");
+			form.setAttribute("method", method);
+			form.setAttribute("action", path);
+
+			for(var key in params) {
+				if(params.hasOwnProperty(key)) {
+					var hiddenField = document.createElement("input");
+					hiddenField.setAttribute("type", "hidden");
+					hiddenField.setAttribute("name", key);
+					hiddenField.setAttribute("value", params[key]);
+
+					form.appendChild(hiddenField);
+				 }
+			}
+
+			document.body.appendChild(form);
+			form.submit();
+		}
 	div(class='container')
 		div(class='jumbotron')
 			center
@@ -14,10 +55,14 @@ block content
 						|Class List
 						br
 						br
-						ul(class="list-unstyled")
+					h3
+						div(class="col-xs-9 list-group col-sm-12" id="lst")
 							each cls, i in classList
-								li
-									a(href="/EditClass/" + cls.classID)= cls.classID
+								a(href="#" class="list-group-item")= cls.classID
+						div(class="col-sm-12")
+							button#btnSubmit(type="Edit",value='Insert',onclick="edit();") Edit
+							button#btnSubmit(type="Delete",value='Insert',onclick="delFunc();") Delete
+
 				div(class='col-sm-6')
 					h2
 						a(href="/CreateClass/")= "Create New Class"

@@ -113,11 +113,28 @@ router.post('/CreateNewClass', restrict ,function(req, res){
           res.redirect("/ClassList")
         });
       } else {
-         return;
+          res.redirect("/ClassList")
       }
   });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 }); 
 
+router.post('/DeleteClass', restrict ,function(req, res){
+  var creator = req.session.user.username;          
+  var collection = db.classes;
+  console.log("InDeleteClass")
+      collection.find({classID:req.body.classID}).toArray(function(err,docs){
+          if(docs.length > 0){ //check if name isn't in use
+            if(docs[0].instructorID == creator){
+              collection.remove({classID:req.body.classID},function(e,docs){
+                res.redirect("/ClassList")
+              });
+            }
+          }
+          else
+            res.redirect("/ClassList")
+
+      });
+});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 
 router.post('/AddInstructor', adminRestrict ,function(req, res){
    var collection = db.users;
@@ -198,8 +215,8 @@ router.get('/Experiment/:classID/:studentID', function(req, res) {
 });
 
 
-// router.get('*', function(req, res) {
-//   res.redirect('/');
-// });
+router.get('*', function(req, res) {
+  res.redirect('/');
+});
 
 module.exports = router;
