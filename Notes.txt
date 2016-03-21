@@ -19,10 +19,6 @@ TODO
 
 Immediate
 _________
-Figure out params
-	Set up default params in index.js, ---configure default ranges?
-	Setup that Data to be read and represented in EditClass.jade
-
 
 EditClass (Post)
 	Create This post
@@ -40,3 +36,7 @@ Longer
 ______
 Warnings For Delete Actions
 Messages For names in use i.e. classes.
+
+Way Longer
+_________
+Ledger of all previous guesses

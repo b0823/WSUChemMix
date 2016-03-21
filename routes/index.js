@@ -162,10 +162,24 @@ router.post('/CreateNewClass', restrict ,function(req, res){
   });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 }); 
 
+router.post('/EditClass', restrict ,function(req, res){
+  var creator = req.session.user.username;          
+  var collection = db.classes;
+      collection.find({classID:req.body.classID}).toArray(function(err,docs){
+          if(docs.length > 0){ //check if name isn't in use
+            if(docs[0].instructorID == creator){
+
+            }
+          }
+          else
+            res.redirect("/ClassList")
+
+      });
+}); 
+
 router.post('/DeleteClass', restrict ,function(req, res){
   var creator = req.session.user.username;          
   var collection = db.classes;
-  console.log("InDeleteClass")
       collection.find({classID:req.body.classID}).toArray(function(err,docs){
           if(docs.length > 0){ //check if name isn't in use
             if(docs[0].instructorID == creator){
@@ -271,7 +285,7 @@ router.post('/Experiment/:classID/:studentID' ,function(req, res){
                 var element = docs[0].students[i];
                 if(element.studentID == req.params.studentID){
                   var theirParams = JSON.parse(req.body.inputs);
-                  var result = competeResult();
+                  var result = competeResult(theirParams,docs[0].params);
 
                   res.render('Experiment', {
                       "title": 'Class ' + req.params.classID,
@@ -292,7 +306,7 @@ router.get('*', function(req, res) {
   res.redirect('/');
 });
 
-var competeResult = function(){
+var competeResult = function(theirParams, classParams){
   return 12.15;
 }
 
