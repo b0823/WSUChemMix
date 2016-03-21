@@ -5,20 +5,6 @@ extends layout
 block content
 	script(type='text/javascript').
 		var updateClass = function(){
-			toConvert = $(".list-group-item")
-			var usernames = [];
-
-			for (var i = 0; i < toConvert.length; i++) {
-				usernames.push({studentID:toConvert[i].text, budgetLeft:budget})
-			};
-			console.log(usernames)
-
-			if(classID != "" && budget != "" && usernames.length > 0 && Number.isInteger(parseInt(budget))){
-				post("/UpdateClass", {"classID":classID, "students":JSON.stringify(), "params":[]})
-			}
-			else{
-				alert("Invalid/Incomplete form.")
-			}
 
 		}
 		var add = function(num){
@@ -33,7 +19,7 @@ block content
 			$("#lst").append('<a href="#" class="list-group-item">'+ str +' </a>');
 		}
 		var generateRandomString = function(len){
-			return randomString(len, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+			return randomString(len, '0123456789abcdefghijklmnopqrstuvwxyz');
 		}
 
 		function randomString(length, chars) {
@@ -41,25 +27,70 @@ block content
 			for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
 			return result;
 		}
+		function post(path, params, method) {
+			method = method || "post"; // Set method to post by default if not specified.
+
+			// The rest of this code assumes you are not using a library.
+			// It can be made less wordy if you use one.
+			var form = document.createElement("form");
+			form.setAttribute("method", method);
+			form.setAttribute("action", path);
+
+			for(var key in params) {
+				if(params.hasOwnProperty(key)) {
+					var hiddenField = document.createElement("input");
+					hiddenField.setAttribute("type", "hidden");
+					hiddenField.setAttribute("name", key);
+					hiddenField.setAttribute("value", params[key]);
+
+					form.appendChild(hiddenField);
+				 }
+			}
+
+			document.body.appendChild(form);
+			form.submit();
+		}
 	div(class='container')
 		div(class='jumbotron')
 			center
 				h1= title
-		center
 			div(class='row')
 				div(class='col-sm-4')
 					h3= "Class ID : " + classID
 					h3= "Budget : " + budget
 					br
 					br
-					h1
+					h3
 						button#btnSubmit(type="Update",value='Insert',onclick="updateClass();") Update
 				div(class='col-sm-4')
-					h2
-						|Params
-						br
-						br
-						ul(class="list-unstyled")
+					h2= "Input Parameters"
+						each inp, i in inputParams						
+							h3= inp.name + " (" + inp.units  + ")"
+							h5="Min"
+							input(type='text', id=inp.name , name=inp.name, value=inp.range[0])
+							h5="Max"
+							input(type='text', id=inp.name , name=inp.name, value=inp.range[1])
+					div(id="lst")
+						h2= "Function Parameters"
+						each cls, i in params						
+							h3= cls.name
+							- if (typeof(cls.value) == 'boolean'){
+							- if (cls.value){
+							input(type='radio', id=cls.name+"RadioTrue", name=cls.name+'optradio', checked=false)
+							| True
+							input(type='radio', id=cls.name+"RadioFalse", name=cls.name+'optradio', checked=true)
+							| False
+							-}
+							- else {
+							input(type='radio', id=cls.name+"RadioTrue", name=cls.name+'optradio', checked=true)
+							| True
+							input(type='radio', id=cls.name+"RadioFalse", name=cls.name+'optradio', checked=false)
+							| False
+							-}
+							-}
+							-else {
+							input(type='text', id=cls.name , name=cls.name, value=cls.value)
+							-}
 
 				div(class='col-sm-4')
 					h2
