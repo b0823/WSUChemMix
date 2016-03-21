@@ -16,19 +16,27 @@ db.users.insert({username:"notbrad", "password":"falsegod", isAdmin:false})
 
 TODO
 
+
+Immediate
+_________
 Figure out params
-	Set up default params, configure default ranges?
+	Set up default params in index.js, ---configure default ranges?
 	Setup that Data to be read and represented in EditClass.jade
-	Parse that data out in a EditClass Post
 
 
-RunExperiment
+EditClass (Post)
+	Create This post
+	Parse out student list, update it in class
+	Parse Params out, update the class with those params.
+
+RunExperiment(Post)
 	Checks a users run budget; fwds to a done page; updates it in DB; sends back new budgetLeft
 	Gets params from class, runs the math function with their inputs attached, returns a result on the same page.
 		Figure out JS math function.
 
 
-		
 
+Longer
+______
 Warnings For Delete Actions
 Messages For names in use i.e. classes.
