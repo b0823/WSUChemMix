@@ -1,0 +1,23 @@
+extends layout
+
+block content
+	body
+		div
+			center
+				h3= message
+		div
+			center
+				form(action='/login', method='post')
+					div
+						label Username:
+						input(type='text', name='username')
+						br
+					div
+						label Password:
+						input(type='password', name='password')
+						br
+						br
+					div
+						input(type='submit', value='Submit')
+				p
+					small Hint - notbrad:falsegod

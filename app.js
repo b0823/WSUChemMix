@@ -2,18 +2,7 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-// database
-var uri = process.env.MONGOLAB_URI;
-if(uri == undefined){ //local testing when not on heroku.
-  uri = 'mongodb://<dbuser>:<dbpassword>@ds019829.mlab.com:19829/heroku_3dr337ph';
-}
-
-var mongo = require('mongodb');
-var monk = require('monk');
-var db = monk(uri);
 
 
 var routes = require('./routes/index');
@@ -30,15 +19,8 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-// Make our db accessible to our router
-app.use(function(req,res,next){
-    req.db = db;
-    next();
-});
 
 app.use('/', routes);
 app.use('/users', users);

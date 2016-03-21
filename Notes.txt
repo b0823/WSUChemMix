@@ -1,0 +1,13 @@
+Classes
+
+
+db.classes.insert({instructorID:"brad", budget:25, students:[{studentID:"534",budgetLeft:12},{studentID:"657",budgetLeft:25}], params:{Temperature_min:25}})
+
+db.classes.insert({instructorID:"notbrad", budget:50, students:[{studentID:"534",budgetLeft:12},{studentID:"657",budgetLeft:50}], params:{Temperature_min:25}})
+
+
+Instructors
+
+db.users.insert({username:"brad", "password":"god", isAdmin:true})
+db.users.insert({username:"notbrad", "password":"falsegod", isAdmin:false})
+
