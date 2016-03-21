@@ -3,21 +3,65 @@ extends layout
 block content
 	script(type='text/javascript').
 		var doAction = function(){
+			toConvert = $(".list-group-item")
+			var usernames = [];
+			var classID = document.getElementById('classID').value;
+			var budget = document.getElementById('guessBudget').value;
+
+			for (var i = 0; i < toConvert.length; i++) {
+				usernames.push({studentID:toConvert[i].text, budgetLeft:budget})
+			};
+			console.log(usernames)
+			if(classID != "" && budget != "" && usernames.length > 0 && Number.isInteger(parseInt(budget))){
+				post("/CreateNewClass", {"budget":budget, "classID":classID, "students":usernames, "params":[]})
+			}
+			else{
+				alert("Invalid/Incomplete form.")
+			}
 
 		}
+		var add = function(num){
+			for (var i = 0; i < num; i++) {
+				addTo(generateRandomString(10));
+			};
+		}
+		var delSelected = function(){
+			$(".active").remove();
+		}	
 		var addTo = function(str){
-			
+			$("#lst").append('<a href="#" class="list-group-item">'+ str +' </a>');
 		}
-		var generateRandomString = function(numToAdd){
-			for(var i = 0; i < numToAdd; i++){
-				var gened = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')+"\n";
-				document.getElementById("studentList").value += gened;
-			}
+		var generateRandomString = function(len){
+			return randomString(len, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 		}
+
 		function randomString(length, chars) {
 			var result = '';
 			for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
 			return result;
+		}
+		function post(path, params, method) {
+			method = method || "post"; // Set method to post by default if not specified.
+
+			// The rest of this code assumes you are not using a library.
+			// It can be made less wordy if you use one.
+			var form = document.createElement("form");
+			form.setAttribute("method", method);
+			form.setAttribute("action", path);
+
+			for(var key in params) {
+				if(params.hasOwnProperty(key)) {
+					var hiddenField = document.createElement("input");
+					hiddenField.setAttribute("type", "hidden");
+					hiddenField.setAttribute("name", key);
+					hiddenField.setAttribute("value", params[key]);
+
+					form.appendChild(hiddenField);
+				 }
+			}
+
+			document.body.appendChild(form);
+			form.submit();
 		}
 	div(class='container')
 		div(class='jumbotron')
@@ -27,17 +71,22 @@ block content
 			div(class='row')
 				div(class='col-sm-6')
 					h2
-						input(type='text', id='classID',name='classID', placeholder='Class ID', value=classID)
+						input(type='text', id='classID',name='classID', placeholder='Class ID', value=classValue)
+						input(type='text', id='guessBudget',name='budgetC', placeholder='Guess Budget', value=budgetC)
+						br
+						br
+						button#btnSubmit(type="CreateClass",value='Insert',onclick="doAction();") Create
+
 				div(class='col-sm-6')
 					div(class="col-xs-9 list-group" id="lst")
-					div
-						button#btnSubmit(type="CreateBoard",value='Insert',onclick="add();") Add
-						button#btnSubmit(type="CreateBoard",value='Insert',onclick="delete();") Delete
-						button#btnSubmit(type="CreateBoard",value='Insert',onclick="addFive();") Add 5 Students
+				
+				div(class='col-sm-6')
+				div(class='col-sm-6')
+					center
+						button#btnSubmit(type="CreateBoard",value='Insert',onclick="add(5);") Add 5 Students
+						button#btnSubmit(type="CreateBoard",value='Insert',onclick="add(1);") Add 1 Student
+						button#btnSubmit(type="CreateBoard",value='Insert',onclick="delSelected();") Delete
 
 				br
 				br			
-				div(class='col-sm-12')
-					h2
-						button#btnSubmit(type="CreateBoard",value='Insert',onclick="doAction();") Create
 

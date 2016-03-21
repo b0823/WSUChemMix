@@ -56,6 +56,25 @@ router.get('/StudentJoin', function(req, res, next) {
     res.render('StudentJoin', { title: 'ChemicalMix' });
 });
 
+router.get('/EditClass/:classID', restrict, function(req, res) {
+  var collection = db.classes;
+  var creator = req.session.user.username;          
+  var goal = req.params.classID;
+
+  collection.find({"classID":goal}).toArray(function(err,doc){
+    if(doc.length == 0 || doc[0].instructorID != creator){
+      res.render('ClassList', { title: 'Instructor Panel', classList:docs });
+    } else {
+      var myClass = doc[0];
+      res.render('EditClass', { 
+            title: 'Edit Class', classID:myClass.classID, budget:myClass.budget,
+            students:myClass.students, params:myClass.params
+      });
+    }
+  }); 
+
+});
+
 router.get('/ClassList', restrict, function(req, res, next) {
 
   var collection = db.classes;
@@ -78,6 +97,23 @@ router.get('/Admin', adminRestrict, function(req, res, next) {
       res.render('Admin', { title: 'Admin Panel', instructorList: docs});
   }); 
 });
+
+
+router.post('/CreateNewClass', restrict ,function(req, res){
+  var creator = req.session.user.username;          
+  var collection = db.classes;
+   collection.find({classID:req.body.classID}).toArray(function(err,docs){
+      if(docs.length == 0 || docs == undefined){ //check if name isn't in use
+        collection.insert({instructorID:creator,classID:req.body.classID, 
+          budget:req.body.budget, students: req.body.students, params:req.body.params},function(e,docs){ 
+          res.redirect("/ClassList")
+        });
+      } else {
+         return;
+      }
+  });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+}); 
+
 
 router.post('/AddInstructor', adminRestrict ,function(req, res){
    var collection = db.users;

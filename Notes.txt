@@ -8,6 +8,6 @@ db.classes.insert({instructorID:"notbrad", classID:"CS150", budget:50, students:
 
 Instructors
 
-db.users.insert({username:"brad", "password":"god", isAdmin:true})
+db.users.insert({username:"brad", "password":"iamafuckinggod", isAdmin:true})
 db.users.insert({username:"notbrad", "password":"falsegod", isAdmin:false})
 
