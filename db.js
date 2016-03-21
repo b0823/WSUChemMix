@@ -12,6 +12,7 @@ MongoClient.connect(mongoURI, function(err, db) {
 	if(err) throw err;
 
 	module.exports.users = db.collection('users');
+	module.exports.classes = db.collection('classes');
 
 	console.log('Connected to Mongo!')
 

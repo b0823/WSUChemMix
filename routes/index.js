@@ -54,25 +54,19 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/StudentJoin', function(req, res, next) {
-  
-  var collection = db.users;
-  collection.find({"username":name}).toArray(function(err,docs){
-      if(err){
-          return fn(new Error('User Not Found'));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-      }
-      if(docs == undefined || docs.length == 0 || docs.length > 1){
-        return fn(new Error('User Not Found'));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-      } else {
-          if (pass == docs[0].password) return fn(null, docs[0]);
-          fn(new Error('invalid password'));  
-      }
-  }); 
-
-  res.render('StudentJoin', { title: 'ChemicalMix' });
+    res.render('StudentJoin', { title: 'ChemicalMix' });
 });
 
 router.get('/ClassList', restrict, function(req, res, next) {
-  res.render('ClassList', { title: 'ChemicalMix' });
+
+  var collection = db.classes;
+
+  collection.find({"instructorID":req.session.user.username}).toArray(function(err,docs){
+    if(docs == undefined){ docs = [];}
+    console.log(docs);
+    res.render('ClassList', { title: 'Instructor Panel', classList:docs });
+  }); 
+
 });
 
 router.get('/Admin', adminRestrict, function(req, res, next) {
