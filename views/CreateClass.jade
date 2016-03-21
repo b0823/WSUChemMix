@@ -9,17 +9,20 @@ block content
 			var budget = document.getElementById('guessBudget').value;
 
 			for (var i = 0; i < toConvert.length; i++) {
-				usernames.push({studentID:toConvert[i].text, budgetLeft:budget})
+				usernames.push({studentID:toConvert[i].text.replaceAll(' ',''), budgetLeft:budget})
 			};
 			console.log(usernames)
 			if(classID != "" && budget != "" && usernames.length > 0 && Number.isInteger(parseInt(budget))){
-				post("/CreateNewClass", {"budget":budget, "classID":classID, "students":usernames, "params":[]})
+				post("/CreateNewClass", {"budget":budget, "classID":classID, "students":JSON.stringify(usernames)})
 			}
 			else{
 				alert("Invalid/Incomplete form.")
 			}
 
 		}
+		String.prototype.replaceAll = function(target, replacement) {
+			return this.split(target).join(replacement);
+		};
 		var add = function(num){
 			for (var i = 0; i < num; i++) {
 				addTo(generateRandomString(10));

@@ -11,3 +11,26 @@ Instructors
 db.users.insert({username:"brad", "password":"iamafuckinggod", isAdmin:true})
 db.users.insert({username:"notbrad", "password":"falsegod", isAdmin:false})
 
+						div(class="col-xs-9 list-group" id="lst")
+
+
+
+TODO
+
+Figure out params
+	Set up default params, configure default ranges?
+	Setup that Data to be read and represented in EditClass.jade
+	Parse that data out in a EditClass Post
+
+Take input Params and show them in Experiment.jade
+
+
+Make a RunExperiment Post path
+	Checks a users run budget; fwds to a done page
+	Gets params from class, runs the math function, returns a result on the same page.
+
+
+
+Delete Classes
+Warnings For Delete Actions
+Messages For names in use i.e. classes.

@@ -3,7 +3,9 @@ var router = express.Router();
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var db = require('../db.js')
+var defaultParams = [
 
+];
 router.use(cookieParser());
 router.use(expressSession({secret:'546dxfgcdsy54'}));
 
@@ -66,9 +68,10 @@ router.get('/EditClass/:classID', restrict, function(req, res) {
       res.render('ClassList', { title: 'Instructor Panel', classList:docs });
     } else {
       var myClass = doc[0];
+      
       res.render('EditClass', { 
             title: 'Edit Class', classID:myClass.classID, budget:myClass.budget,
-            students:myClass.students, params:myClass.params
+            students:myClass.students, params:defaultParams
       });
     }
   }); 
@@ -104,8 +107,9 @@ router.post('/CreateNewClass', restrict ,function(req, res){
   var collection = db.classes;
    collection.find({classID:req.body.classID}).toArray(function(err,docs){
       if(docs.length == 0 || docs == undefined){ //check if name isn't in use
+        var parsed = JSON.parse(req.body.students);
         collection.insert({instructorID:creator,classID:req.body.classID, 
-          budget:req.body.budget, students: req.body.students, params:req.body.params},function(e,docs){ 
+          budget:req.body.budget, students: parsed, params:defaultParams},function(e,docs){ 
           res.redirect("/ClassList")
         });
       } else {
@@ -169,25 +173,33 @@ router.get('/logout', function(req, res){
   });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
      
-router.get('/:classID/:studentID', function(req, res) {
+router.get('/Experiment/:classID/:studentID', function(req, res) {
     var collection = db.classes;//('classes');
-
-    collection.find({"classID":req.params.classID},{},function(e,docs){ 
+    collection.find({"classID":req.params.classID}).toArray(function(err,docs){
         if(docs.length == 0){
             //Not found in DB.
             res.redirect('/StudentJoin');
         } else {
-            res.render('Experiment', {
-                "title": 'Class ' + req.params.classID,
-                "budget": 25
-            });
+            var notFound = true;
+            for (var i = 0; i < docs[0].students.length; i++) {
+                var element = docs[0].students[i];
+                if(element.studentID == req.params.studentID){
+                  res.render('Experiment', {
+                      "title": 'Class ' + req.params.classID,
+                      "budget": element.budgetLeft
+                  });
+                  notFound = false;
+                }
+            };
+            if(notFound)
+              res.redirect('/StudentJoin');
         }
     });
 });
 
 
-router.get('*', function(req, res) {
-  res.redirect('/');
-});
+// router.get('*', function(req, res) {
+//   res.redirect('/');
+// });
 
 module.exports = router;

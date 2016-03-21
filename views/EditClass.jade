@@ -1,1 +1,75 @@
+
 extends layout
+
+
+block content
+	script(type='text/javascript').
+		var updateClass = function(){
+			toConvert = $(".list-group-item")
+			var usernames = [];
+
+			for (var i = 0; i < toConvert.length; i++) {
+				usernames.push({studentID:toConvert[i].text, budgetLeft:budget})
+			};
+			console.log(usernames)
+
+			if(classID != "" && budget != "" && usernames.length > 0 && Number.isInteger(parseInt(budget))){
+				post("/UpdateClass", {"classID":classID, "students":JSON.stringify(), "params":[]})
+			}
+			else{
+				alert("Invalid/Incomplete form.")
+			}
+
+		}
+		var add = function(num){
+			for (var i = 0; i < num; i++) {
+				addTo(generateRandomString(10));
+			};
+		}
+		var delSelected = function(){
+			$(".active").remove();
+		}	
+		var addTo = function(str){
+			$("#lst").append('<a href="#" class="list-group-item">'+ str +' </a>');
+		}
+		var generateRandomString = function(len){
+			return randomString(len, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+		}
+
+		function randomString(length, chars) {
+			var result = '';
+			for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+			return result;
+		}
+	div(class='container')
+		div(class='jumbotron')
+			center
+				h1= title
+		center
+			div(class='row')
+				div(class='col-sm-4')
+					h3= "Class ID : " + classID
+					h3= "Budget : " + budget
+					br
+					br
+					h1
+						button#btnSubmit(type="Update",value='Insert',onclick="updateClass();") Update
+				div(class='col-sm-4')
+					h2
+						|Params
+						br
+						br
+						ul(class="list-unstyled")
+
+				div(class='col-sm-4')
+					h2
+						|Students
+					br
+				
+					div(class="col-xs-9 list-group" id="lst")
+						each cls, i in students						
+							a(href="#" class="list-group-item")= cls.studentID
+
+					button#btnSubmit(type="CreateBoard",value='Insert',onclick="add(5);") Add 5 Students
+					button#btnSubmit(type="CreateBoard",value='Insert',onclick="add(1);") Add 1 Student
+					button#btnSubmit(type="CreateBoard",value='Insert',onclick="delSelected();") Delete
