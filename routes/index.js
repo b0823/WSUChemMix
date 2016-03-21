@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var passport = require("passport");
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var db = require('../db.js')
