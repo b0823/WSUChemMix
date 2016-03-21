@@ -1,1 +1,43 @@
 extends layout
+
+block content
+	script(type='text/javascript').
+		var doAction = function(){
+
+		}
+		var addTo = function(str){
+			
+		}
+		var generateRandomString = function(numToAdd){
+			for(var i = 0; i < numToAdd; i++){
+				var gened = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')+"\n";
+				document.getElementById("studentList").value += gened;
+			}
+		}
+		function randomString(length, chars) {
+			var result = '';
+			for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+			return result;
+		}
+	div(class='container')
+		div(class='jumbotron')
+			center
+				h1= title
+		center
+			div(class='row')
+				div(class='col-sm-6')
+					h2
+						input(type='text', id='classID',name='classID', placeholder='Class ID', value=classID)
+				div(class='col-sm-6')
+					div(class="col-xs-9 list-group" id="lst")
+					div
+						button#btnSubmit(type="CreateBoard",value='Insert',onclick="add();") Add
+						button#btnSubmit(type="CreateBoard",value='Insert',onclick="delete();") Delete
+						button#btnSubmit(type="CreateBoard",value='Insert',onclick="addFive();") Add 5 Students
+
+				br
+				br			
+				div(class='col-sm-12')
+					h2
+						button#btnSubmit(type="CreateBoard",value='Insert',onclick="doAction();") Create
+

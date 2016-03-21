@@ -9,7 +9,7 @@ block content
 				h1= title
 		center
 			div(class='row')
-				div(class='col-sm-4')
+				div(class='col-sm-6')
 					h2
 						|Class List
 						br
@@ -18,9 +18,10 @@ block content
 							each cls, i in classList
 								li
 									a(href="/EditClass/" + cls.classID)= cls.classID
-				div(class='col-sm-4')
+				div(class='col-sm-6')
 					h2
 						a(href="/CreateClass/")= "Create New Class"
-				div(class='col-sm-4')
 					h2
-						a(href="/logout/")= "Logout"
+						a(href="/Admin/")= "Admin Panel"
+					h2
+						a(href="/logout/")= "Logout"					

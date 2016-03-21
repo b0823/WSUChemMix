@@ -1,1 +1,72 @@
+
 extends layout
+
+block content
+	script(type='text/javascript').
+
+		var del = function(){
+			var toDel = $(".active").text();
+			if(toDel != undefined)
+				post('/DeleteInstructor', {username:toDel})
+		}
+
+		var doAction = function(){
+			var uname = document.getElementById('username').value;
+			var pwd = document.getElementById('password').value;
+			if(uname != undefined && pwd != undefined){
+				post('/AddInstructor', {username:uname, password:pwd})
+			}
+		}
+
+		function post(path, params, method) {
+			method = method || "post"; // Set method to post by default if not specified.
+
+			// The rest of this code assumes you are not using a library.
+			// It can be made less wordy if you use one.
+			var form = document.createElement("form");
+			form.setAttribute("method", method);
+			form.setAttribute("action", path);
+
+			for(var key in params) {
+				if(params.hasOwnProperty(key)) {
+					var hiddenField = document.createElement("input");
+					hiddenField.setAttribute("type", "hidden");
+					hiddenField.setAttribute("name", key);
+					hiddenField.setAttribute("value", params[key]);
+
+					form.appendChild(hiddenField);
+				 }
+			}
+
+			document.body.appendChild(form);
+			form.submit();
+		}
+
+	div(class='container')
+		div(class='jumbotron')
+			center
+				h1= title
+		center
+			div(class='row')
+				div(class='col-sm-4')
+					h2
+						|Instructors
+					.list-group
+						each cls, i in instructorList
+							a.list-group-item(href='#')= cls.username
+					button#btnSubmit(type="CreateBoard",value='Insert',onclick="del();") Delete					
+
+				div(class='col-sm-4')
+					h1
+						|Add Instructor
+					h3
+						input(type='text', id='username',name='username', placeholder='Username', value=username)
+					h3
+						input(type='text', id='password' , name='password', placeholder='Password', value=password)
+					h2
+						button#btnSubmit(type="CreateBoard",value='Insert',onclick="doAction();") Add Instructor								
+				div(class='col-sm-4')
+					h2
+						a(href="/ClassList/")= "Instructor Panel"
+					h2
+						a(href="/logout/")= "Logout"					

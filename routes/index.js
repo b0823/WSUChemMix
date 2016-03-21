@@ -63,15 +63,46 @@ router.get('/ClassList', restrict, function(req, res, next) {
 
   collection.find({"instructorID":req.session.user.username}).toArray(function(err,docs){
     if(docs == undefined){ docs = [];}
-    console.log(docs);
     res.render('ClassList', { title: 'Instructor Panel', classList:docs });
   }); 
 
 });
 
-router.get('/Admin', adminRestrict, function(req, res, next) {
-  res.render('Admin', { title: 'ChemicalMix' });
+router.get('/CreateClass', restrict, function(req, res, next) {
+    res.render('CreateClass', { title: 'Create Class'});
 });
+
+router.get('/Admin', adminRestrict, function(req, res, next) {
+  var collection = db.users;
+
+  collection.find({"isAdmin":false}).toArray(function(err,docs){
+      res.render('Admin', { title: 'Admin Panel', instructorList: docs});
+  }); 
+});
+
+router.post('/AddInstructor', adminRestrict ,function(req, res){
+   var collection = db.users;
+   collection.find({username:req.body.username}).toArray(function(err,docs){
+      if(docs.length == 0 || docs == undefined){ //check if name isn't in use
+        collection.insert({ "username" : req.body.username,"password" : req.body.password,"isAdmin" : false},function(e,docs){ 
+          res.redirect("/Admin")
+        });
+      } else {
+         res.redirect("/Admin")
+      }
+  });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+}); 
+
+router.post('/DeleteInstructor', adminRestrict ,function(req, res){
+   var collection = db.users;
+   collection.remove({username:req.body.username},function(e,docs){ 
+      var collection = db.classes;
+        collection.remove({instructorID:req.body.username},function(e,docs){
+          res.redirect("/Admin")
+        });
+   });
+
+}); 
 
 router.get('/Login', function(req, res, next) {
   res.render('Login', { title: 'ChemicalMix' });
