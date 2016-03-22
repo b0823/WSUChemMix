@@ -10,7 +10,18 @@ block content
 					alert("Incomplete Form");
 					return;
 				}
-				inValues.push(parseFloat(inputs[i].value));
+				var num = parseFloat(inputs[i].value);
+				var text = document.getElementById(inputs[i].id.replace("input","Range")).textContent.split(";");
+
+				var min = parseFloat(text[0].replace(/\D/g,''));
+				var max = parseFloat(text[1].replace(/\D/g,''));
+
+				if(num > max || num <min){
+					alert("Out Of Range input");
+					return;
+				}
+
+				inValues.push(num);
 			};
 
 			var locSplit =  location.href.split("/").reverse();
@@ -50,8 +61,9 @@ block content
 					h3
 						div(class="col-sm-12" id="lst")
 							each cls, i in inputParams
-								h3= cls
-								input(type='text', class="inputParam" id=cls + 'input' ,name='studentID', placeholder=cls, value=inParam)
+								h3= cls.name
+								h6(id=cls.name+"Range")= "Min=" + cls.range[0] + ";Max=" + cls.range[1]
+								input(type='text', class="inputParam" id=cls.name + 'input' ,name='studentID',  value=inParam)
 
 				div(class='col-sm-6')
 					- if (typeof(Result) !== 'undefined'){

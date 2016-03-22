@@ -51,7 +51,7 @@ var defaultInput = [
 ];
 
 router.use(cookieParser());
-router.use(expressSession({secret:'546dxfgcdsy54'}));
+router.use(expressSession({secret:'546dxfgcdsy54',resave: true,saveUninitialized: true}));
 
 function restrict(req, res, next) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
   if (req.session.user) {
@@ -162,13 +162,19 @@ router.post('/CreateNewClass', restrict ,function(req, res){
   });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 }); 
 
-router.post('/EditClass', restrict ,function(req, res){
+router.post('/EditClass/:classID', restrict ,function(req, res){
   var creator = req.session.user.username;          
   var collection = db.classes;
-      collection.find({classID:req.body.classID}).toArray(function(err,docs){
+  var inParams = JSON.parse(req.body.inputParams);
+  var newParams = JSON.parse(req.body.params);
+  var studList = JSON.parse(req.body.students);
+
+      collection.find({classID:req.params.classID}).toArray(function(err,docs){
           if(docs.length > 0){ //check if name isn't in use
             if(docs[0].instructorID == creator){
-
+              collection.update({ classID: req.params.classID }, { $set: { students: studList, params: newParams,inputParams: inParams }},function(e,docs){
+                  res.redirect("/ClassList") 
+              });
             }
           }
           else
@@ -307,6 +313,8 @@ router.get('*', function(req, res) {
 });
 
 var competeResult = function(theirParams, classParams){
+  console.log(theirParams)
+  console.log(classParams)
   return 12.15;
 }
 

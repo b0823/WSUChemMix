@@ -5,7 +5,47 @@ extends layout
 block content
 	script(type='text/javascript').
 		var updateClass = function(){
+			var mins = document.getElementsByClassName("inParamMin");
+			var maxes = document.getElementsByClassName("inParamMax");
+			var unitsList = document.getElementsByClassName("inParamsUnit");
 
+			var inParams = [];
+			for (var i = 0; i < mins.length; i++) {
+				if(mins[i].value == "" || !isNumeric(mins[i].value)){alert("Missing/Invalid Data"); return;}
+				inParams.push({name:mins[i].id,units:unitsList[i].textContent.replace("(","").replace(")",""), range:[mins[i].value,maxes[i].value]})
+			};
+			
+			var funcParams = document.getElementsByClassName("funcParam");
+			var mathParams = [];
+
+			for (var i = 0; i < funcParams.length; i++) {
+				var element = funcParams[i];
+				if(element.type=="radio"){
+					if(element.checked){
+						mathParams.push({name:element.id, value: JSON.parse(element.nextSibling.textContent.toLowerCase()) })
+					}
+				}
+				else{
+					if(element.value == "" || !isNumeric(element.value)){alert("Missing/Invalid Data"); return;}
+					mathParams.push({name:element.id, value:element.value})
+				}
+			};
+
+			var studList = [];
+			var listElements = document.getElementsByClassName("list-group-item");
+			if(listElements.length == 0){
+				alert("Invalid/Incomplete Data")
+				return;
+			}
+			for (var i = 0; i < listElements.length; i++) {
+				var element = listElements[i];
+				studList.push({studentID:element.text,budgetLeft:parseInt(element.id)})
+			};
+
+			// console.log(mathParams)			
+			var locSplit =  location.href.split("/").reverse();
+
+			post("/EditClass/" + locSplit[0], {inputParams:JSON.stringify(inParams), students: JSON.stringify(studList), params: JSON.stringify(mathParams)})
 		}
 		var add = function(num){
 			for (var i = 0; i < num; i++) {
@@ -16,10 +56,13 @@ block content
 			$(".active").remove();
 		}	
 		var addTo = function(str){
-			$("#lst").append('<a href="#" class="list-group-item">'+ str +' </a>');
+			$("#classList").append('<a href="#" id="' + document.getElementById("Budget").textContent.split(":")[1] +  '"class="list-group-item">'+ str +' </a>');
 		}
 		var generateRandomString = function(len){
 			return randomString(len, '0123456789abcdefghijklmnopqrstuvwxyz');
+		}
+		function isNumeric(n) {
+		  return !isNaN(parseFloat(n)) && isFinite(n);
 		}
 
 		function randomString(length, chars) {
@@ -57,7 +100,7 @@ block content
 			div(class='row')
 				div(class='col-sm-4')
 					h3= "Class ID : " + classID
-					h3= "Budget : " + budget
+					h3(id="Budget")= "Budget : " + budget
 					br
 					br
 					h3
@@ -65,31 +108,32 @@ block content
 				div(class='col-sm-4')
 					h2= "Input Parameters"
 						each inp, i in inputParams						
-							h3= inp.name + " (" + inp.units  + ")"
+							h3= inp.name
+							h5(class="inParamsUnit")="(" + inp.units  + ")"
 							h5="Min"
-							input(type='text', id=inp.name , name=inp.name, value=inp.range[0])
+							input(type='text', class="inParamMin", id=inp.name , name=inp.name, value=inp.range[0])
 							h5="Max"
-							input(type='text', id=inp.name , name=inp.name, value=inp.range[1])
+							input(type='text', class="inParamMax", id=inp.name , name=inp.name, value=inp.range[1])
 					div(id="lst")
 						h2= "Function Parameters"
 						each cls, i in params						
 							h3= cls.name
 							- if (typeof(cls.value) == 'boolean'){
 							- if (cls.value){
-							input(type='radio', id=cls.name+"RadioTrue", name=cls.name+'optradio', checked=false)
+							input(type='radio',class="funcParam", id=cls.name, name=cls.name+'optradio', checked=false)
 							| True
-							input(type='radio', id=cls.name+"RadioFalse", name=cls.name+'optradio', checked=true)
+							input(type='radio', class="funcParam", id=cls.name, name=cls.name+'optradio', checked=true)
 							| False
 							-}
 							- else {
-							input(type='radio', id=cls.name+"RadioTrue", name=cls.name+'optradio', checked=true)
+							input(type='radio', class="funcParam", id=cls.name, name=cls.name+'optradio', checked=true)
 							| True
-							input(type='radio', id=cls.name+"RadioFalse", name=cls.name+'optradio', checked=false)
+							input(type='radio', class="funcParam", id=cls.name, name=cls.name+'optradio', checked=false)
 							| False
 							-}
 							-}
 							-else {
-							input(type='text', id=cls.name , name=cls.name, value=cls.value)
+							input(type='text', id=cls.name, class="funcParam", name=cls.name, value=cls.value)
 							-}
 
 				div(class='col-sm-4')
@@ -97,9 +141,9 @@ block content
 						|Students
 					br
 				
-					div(class="col-xs-9 list-group" id="lst")
+					div(class="col-xs-9 list-group" id="classList")
 						each cls, i in students						
-							a(href="#" class="list-group-item")= cls.studentID
+							a(href="#" class="list-group-item", "id"=cls.budgetLeft)= cls.studentID
 
 					button#btnSubmit(type="CreateBoard",value='Insert',onclick="add(5);") Add 5 Students
 					button#btnSubmit(type="CreateBoard",value='Insert',onclick="add(1);") Add 1 Student
