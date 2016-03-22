@@ -9,7 +9,7 @@ block content
 			var budget = document.getElementById('guessBudget').value;
 
 			for (var i = 0; i < toConvert.length; i++) {
-				usernames.push({studentID:toConvert[i].text.replaceAll(' ',''), budgetLeft:budget})
+				usernames.push({studentID:toConvert[i].text.replaceAll(' ',''), budgetLeft:parseInt(budget)})
 			};
 			console.log(usernames)
 			if(classID != "" && budget != "" && usernames.length > 0 && Number.isInteger(parseInt(budget))){

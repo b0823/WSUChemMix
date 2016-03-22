@@ -21,8 +21,6 @@ Immediate
 _________
 
 RunExperiment(Post)
-	Checks a users run budget; fwds to a done page; updates it in DB; sends back new budgetLeft
-	Gets params from class, runs the math function with their inputs attached, returns a result on the same page.
 		Figure out JS math function.
 
 
@@ -31,6 +29,7 @@ Longer
 ______
 Warnings For Delete Actions
 Messages For names in use i.e. classes.
+Disable reloads from recalling post
 
 Way Longer
 _________

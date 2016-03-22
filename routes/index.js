@@ -97,7 +97,9 @@ function authenticate(name, pass, fn) {
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'ChemicalMix' });
 });
-
+router.get('/ExperimentDone', function(req, res, next) {
+  res.render('Done', { title: 'You Have Completed the Experiment' });
+});
 router.get('/StudentJoin', function(req, res, next) {
     res.render('StudentJoin', { title: 'ChemicalMix' });
 });
@@ -290,15 +292,27 @@ router.post('/Experiment/:classID/:studentID' ,function(req, res){
             for (var i = 0; i < docs[0].students.length; i++) {
                 var element = docs[0].students[i];
                 if(element.studentID == req.params.studentID){
-                  var theirParams = JSON.parse(req.body.inputs);
-                  var result = competeResult(theirParams,docs[0].params);
 
-                  res.render('Experiment', {
-                      "title": 'Class ' + req.params.classID,
-                      "budget": element.budgetLeft,
-                      "inputParams": docs[0].inputParams,
-                      "Result" : result
-                  });
+                  if(element.budgetLeft -1 < 0){
+                    res.redirect("/ExperimentDone");
+                  }
+                  var newBudget = element.budgetLeft-1;
+
+                  var theirParams = JSON.parse(req.body.inputs);
+
+                  collection.update( {classID : req.params.classID , "students.studentID" : element.studentID } , {$inc : {"students.$.budgetLeft" : -1} } ,   function (err, result) {
+                    if (err) throw err;
+                    console.log(result);
+                 })                  
+
+                     var result = mathFunction(theirParams,docs[0].params);
+
+                    res.render('Experiment', {
+                        "title": 'Class ' + req.params.classID,
+                        "budget": newBudget,
+                        "inputParams": docs[0].inputParams,
+                        "Result" : result
+                    });
                   notFound = false;
                 }
             };
@@ -312,10 +326,10 @@ router.get('*', function(req, res) {
   res.redirect('/');
 });
 
-var competeResult = function(theirParams, classParams){
-  console.log(theirParams)
-  console.log(classParams)
-  return 12.15;
+var mathFunction = function(theirParams, classParams){
+  // console.log(theirParams)
+  // console.log(classParams)
+  return [{name:"Temp", value: 1}, {name:"yield", value:3},{name:"Temp", value:1}, {name:"Temp", value:1}];
 }
 
 module.exports = router;
