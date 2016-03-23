@@ -53,43 +53,42 @@ var defaultInput = [
 router.use(cookieParser());
 router.use(expressSession({secret:'546dxfgcdsy54',resave: true,saveUninitialized: true}));
 
-function restrict(req, res, next) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+function restrict(req, res, next) { 
   if (req.session.user) {
-    next();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-  } else {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-    req.session.error = 'Access denied!';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-    res.redirect('/login');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-  }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    next();
+  } else {
+    req.session.error = 'Access denied!';
+    res.redirect('/login');
+  }
 }
 
-function adminRestrict(req, res, next) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+function adminRestrict(req, res, next) {
   if (req.session.user) {
     if(req.session.user.isAdmin){
       next();                     
     } else {
       res.redirect('/ClassList')
-    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-  } else {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-    req.session.error = 'Access denied!';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-    res.redirect('/login');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-  }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    }
+  } else { 
+    req.session.error = 'Access denied!';
+    res.redirect('/login');
+  }
 }
 
-function authenticate(name, pass, fn) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-  // if (!module.parent) 
+function authenticate(name, pass, fn) { 
     var collection = db.users;
 
     collection.find({"username":name}).toArray(function(err,docs){
         if(err){
-            return fn(new Error('User Not Found'));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+            return fn(new Error('User Not Found'));  
         }
         if(docs == undefined || docs.length == 0 || docs.length > 1){
-          return fn(new Error('User Not Found'));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+          return fn(new Error('User Not Found')); 
         } else {
             if (pass == docs[0].password) return fn(null, docs[0]);
             fn(new Error('invalid password'));  
         }
-    });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+    });  
 }  
 
 
@@ -161,8 +160,8 @@ router.post('/CreateNewClass', restrict ,function(req, res){
       } else {
           res.redirect("/ClassList")
       }
-  });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-}); 
+  }); 
+ }); 
 
 router.post('/EditClass/:classID', restrict ,function(req, res){
   var creator = req.session.user.username;          
@@ -200,7 +199,7 @@ router.post('/DeleteClass', restrict ,function(req, res){
             res.redirect("/ClassList")
 
       });
-});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+}); 
 
 router.post('/AddInstructor', adminRestrict ,function(req, res){
    var collection = db.users;
@@ -212,8 +211,8 @@ router.post('/AddInstructor', adminRestrict ,function(req, res){
       } else {
          res.redirect("/Admin")
       }
-  });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-}); 
+  }); 
+ }); 
 
 router.post('/DeleteInstructor', adminRestrict ,function(req, res){
    var collection = db.users;
@@ -318,7 +317,7 @@ router.post('/Experiment/:classID/:studentID' ,function(req, res){
             if(notFound)
               res.redirect('/StudentJoin');
         }
-    });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+    }); 
 }); 
 
 router.get('*', function(req, res) {
