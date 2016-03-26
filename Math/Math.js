@@ -227,7 +227,10 @@ var HalfRange = function(name, params){
 
 var findFromName = function(name,params){
 	for (var i = 0; i < params.length; i++) {
-		if(params[i].name == name) return parseFloat(params[i].value);
+		if(params[i].name == name) {
+            if(typeof params[i].value == "boolean") return params[i].value;
+            return parseFloat(params[i].value);
+        };
 	};
 }
 
