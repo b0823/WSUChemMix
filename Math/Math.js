@@ -168,9 +168,9 @@ function calcMolecularWeight(X,classParams){
 module.exports.mainFunction = function(theirParams, classParams, classInputRanges){
 	//Temp, Concentration, Feed Rate, Pressure, Time. Could add name tags like functionParams if it helps.
 
-    console.log(theirParams)
-    console.log(classParams)
-    console.log(classInputRanges)
+    // console.log(theirParams)
+    // console.log(classParams)
+    // console.log(classInputRanges)
 
 	var X = createData(theirParams,classParams,classInputRanges);
 
