@@ -30,7 +30,7 @@ block content
 				}
 				else{
 					if(element.value == "" || !isNumeric(element.value)){alert("Missing/Invalid Data"); return;}
-					mathParams.push({name:element.id, value:element.value})
+					mathParams.push({name:element.id, value:parseFloat(element.value)})
 				}
 			};
 
