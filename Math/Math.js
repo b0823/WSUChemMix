@@ -227,19 +227,19 @@ var HalfRange = function(name, params){
 
 var findFromName = function(name,params){
 	for (var i = 0; i < params.length; i++) {
-		if(params[i].name == name) return params[i].value;
+		if(params[i].name == name) parseFloat(return params[i].value);
 	};
 }
 
 var findMin = function(name,params){
 	for (var i = 0; i < params.length; i++) {
-		if(params[i].name == name) return params[i].range[0];
+		if(params[i].name == name) return parseFloat(params[i].range[0]);
 	};
 }
 
 var findMax = function(name,params){
 	for (var i = 0; i < params.length; i++) {
-		if(params[i].name == name) return params[i].range[1];
+		if(params[i].name == name) return parseFloat(params[i].range[1]);
 	};
 }
 
