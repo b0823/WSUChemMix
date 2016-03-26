@@ -12,7 +12,10 @@ block content
 			var inParams = [];
 			for (var i = 0; i < mins.length; i++) {
 				if(mins[i].value == "" || !isNumeric(mins[i].value)){alert("Missing/Invalid Data"); return;}
-				inParams.push({name:mins[i].id,units:unitsList[i].textContent.replace("(","").replace(")",""), range:[mins[i].value,maxes[i].value]})
+				
+				inParams.push({name:mins[i].id,units:unitsList[i].textContent.replace("(","").replace(")",""), 
+					range:[parseFloat(mins[i].value),parseFloat(maxes[i].value)]})
+
 			};
 			
 			var funcParams = document.getElementsByClassName("funcParam");

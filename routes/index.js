@@ -3,52 +3,9 @@ var router = express.Router();
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var db = require('../db.js')
+var MATHFUNCTIONS = require('../Math/Math.js')
+var DEFAULTS = require('../Math/ClassDefaults.js')
 
-var defaultParams = [
-  {"name":"Primary", "value": 1},
-  {"name":"Secondary", "value": 2},
-  {"name":"NoiseLevel", "value": 3},
-  {"name":"Noise Variable", "value": 3},
-  {"name":"Noise Min", "value": 0},
-  {"name":"Upper Left", "value": 0},
-  {"name":"Lower Left", "value": 1},
-  {"name":"Upper Right", "value": 0},
-  {"name":"Lower Right", "value": 0},
-  {"name":"Steepness", "value": 70},
-  {"name":"Small Peak", "value": 100},
-  {"name":"Yield Max", "value": 150},
-
-
-  {"name":"Viscosity Influence", "value": 1},
-
-
-  {"name":"Viscosity Max", "value": 500},
-  {"name":"Single Variable", "value": true},
-  {"name":"Dual Variable", "value": false},
-  {"name":"Sinusoid", "value": 0},
-  {"name":"Gentle Max", "value": 0},
-  {"name":"Wiggly", "value": 1},
-  {"name":"Third Variable", "value": 3},
-  {"name":"Shape", "value": 2},
-  {"name":"Skew", "value": 0},
-  {"name":"Position", "value": 1},
-  {"name":"Mole Influence", "value": 2},
-  {"name":"Adjust", "value": -.5},
-  {"name":"Mole Max", "value": 500},
-  {"name":"Mole Min", "value": 200},
-  {"name":"Sneaky", "value": 5},
-  {"name":"Sneaky Percent", "value":  10},
-  {"name":"Sneaky Max", "value": .5}
-
-];
-
-var defaultInput = [
-  {"name":"Temperature", "range":[200,450], "units":"deg" },
-  {"name":"Concentration", "range":[100,500],  "units":"g/l"}, 
-  {"name":"Feed rate", "range":[200,600],  "units":"g/m"},
-  {"name":"Pressure", "range":[140,200], "units":"psi" },
-  {"name":"Time", "range":[15,45],  "units":"mins"}
-];
 
 router.use(cookieParser());
 router.use(expressSession({secret:'546dxfgcdsy54',resave: true,saveUninitialized: true}));
@@ -154,14 +111,14 @@ router.post('/CreateNewClass', restrict ,function(req, res){
       if(docs.length == 0 || docs == undefined){ //check if name isn't in use
         var parsed = JSON.parse(req.body.students);
         collection.insert({instructorID:creator,classID:req.body.classID, 
-          budget:req.body.budget, students: parsed, inputParams: defaultInput, params:defaultParams},function(e,docs){ 
+          budget:req.body.budget, students: parsed, inputParams: DEFAULTS.defaultInput, params:DEFAULTS.defaultParams},function(e,docs){ 
           res.redirect("/ClassList")
         });
       } else {
           res.redirect("/ClassList")
       }
   }); 
- }); 
+}); 
 
 router.post('/EditClass/:classID', restrict ,function(req, res){
   var creator = req.session.user.username;          
@@ -300,11 +257,10 @@ router.post('/Experiment/:classID/:studentID' ,function(req, res){
 
                   collection.update( {classID : req.params.classID , "students.studentID" : element.studentID } , {$inc : {"students.$.budgetLeft" : -1} } ,   function (err, result) {
                     if (err) throw err;
-                    console.log(result);
                  })                  
 
-                     var result = mathFunction(theirParams,docs[0].params);
-
+                    var result = MATHFUNCTIONS.mainFunction(theirParams, docs[0].params, docs[0].inputParams);
+                    
                     res.render('Experiment', {
                         "title": 'Class ' + req.params.classID,
                         "budget": newBudget,
@@ -324,10 +280,5 @@ router.get('*', function(req, res) {
   res.redirect('/');
 });
 
-var mathFunction = function(theirParams, classParams){
-  // console.log(theirParams)
-  // console.log(classParams)
-  return [{name:"Temp", value: 1}, {name:"yield", value:3},{name:"Temp", value:1}, {name:"Temp", value:1}];
-}
 
 module.exports = router;
