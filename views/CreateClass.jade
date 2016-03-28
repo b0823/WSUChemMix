@@ -16,18 +16,42 @@ block content
 				post("/CreateNewClass", {"budget":budget, "classID":classID, "students":JSON.stringify(usernames)})
 			}
 			else{
-				alert("Invalid/Incomplete form.")
+				alert("Invalid/Incomplete form Lacks ClassID/Budget/Students.")
 			}
 
 		}
 		String.prototype.replaceAll = function(target, replacement) {
 			return this.split(target).join(replacement);
 		};
+
 		var add = function(num){
-			for (var i = 0; i < num; i++) {
-				addTo(generateRandomString(10));
+			var lst = [];
+			var current = [];
+			toConvert = $(".list-group-item")
+
+			for (var i = 0; i < toConvert.length; i++) {
+				current.push(toConvert[i].text)
+			};
+
+
+			while(lst.length < num){
+				var gen = generateRandomString(10);
+				if(lst.indexOf(gen)>-1){}
+				else if(current.indexOf(gen)>-1){}
+				else lst.push(gen);
+			}
+
+
+			for (var i = 0; i < lst.length; i++) {
+				addTo(lst[i])
+				// addTo(generateRandomString(10));
 			};
 		}
+
+		function hasDuplicates(array) {
+			return (new Set(array)).size !== array.length;
+		}
+
 		var delSelected = function(){
 			$(".active").remove();
 		}	
@@ -75,7 +99,7 @@ block content
 				div(class='col-sm-6')
 					h2
 						input(type='text', id='classID',name='classID', placeholder='Class ID', value=classValue)
-						input(type='text', id='guessBudget',name='budgetC', placeholder='Guess Budget', value=budgetC)
+						input(type='text', id='guessBudget',name='budgetC', placeholder='Run Budget', value=budgetC)
 						br
 						br
 						button#btnSubmit(type="CreateClass",value='Insert',onclick="doAction();") Create

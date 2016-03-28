@@ -51,8 +51,25 @@ block content
 			post("/EditClass/" + locSplit[0], {inputParams:JSON.stringify(inParams), students: JSON.stringify(studList), params: JSON.stringify(mathParams)})
 		}
 		var add = function(num){
-			for (var i = 0; i < num; i++) {
-				addTo(generateRandomString(10));
+			var lst = [];
+			var current = [];
+			toConvert = $(".list-group-item")
+
+			for (var i = 0; i < toConvert.length; i++) {
+				current.push(toConvert[i].text)
+			};
+
+
+			while(lst.length < num){
+				var gen = generateRandomString(10);
+				if(lst.indexOf(gen)>-1){}
+				else if(current.indexOf(gen)>-1){}
+				else lst.push(gen);
+			}
+
+
+			for (var i = 0; i < lst.length; i++) {
+				addTo(lst[i])
 			};
 		}
 		var delSelected = function(){

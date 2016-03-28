@@ -6,14 +6,17 @@ block content
 
 		var del = function(){
 			var toDel = $(".active").text();
-			if(toDel != undefined)
-				post('/DeleteInstructor', {username:toDel})
+			if(toDel != undefined){
+				if(window.confirm("Are you sure you want to delete this Instructor?"))
+					post('/DeleteInstructor', {username:toDel})
+			}
 		}
 
 		var doAction = function(){
 			var uname = document.getElementById('username').value;
 			var pwd = document.getElementById('password').value;
-			if(uname != undefined && pwd != undefined){
+
+			if(uname != undefined && pwd != undefined && uname != "" && pwd != ""){
 				post('/AddInstructor', {username:uname, password:pwd})
 			}
 		}

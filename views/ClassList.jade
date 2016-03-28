@@ -8,7 +8,7 @@ block content
 		var delFunc = function(){
 			var active =  document.getElementsByClassName("active");
 			if(active.length == 0 || active == undefined) return;
-			else {
+			else if (window.confirm("Are you sure you want to delete this class?")){
 				var clsID = active[0].text;
 				post("/DeleteClass/", {"classID":clsID})
 			}
