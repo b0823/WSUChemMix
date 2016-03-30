@@ -209,6 +209,10 @@ module.exports.mainFunction = function(theirParams, classParams, classInputRange
     visc+= ViscosityNoise
     moleWeight+= MoleNoise
 
+    yield = parseFloat(yield).toFixed(3);
+    visc = parseFloat(visc).toFixed(3);
+    moleWeight = parseFloat(moleWeight).toFixed(3);
+
 
   //Make return look like this; name is name of return i.e. yield, value is the numerical value.
   return [{name:"Yield", value: yield}, {name:"Viscosity", value:visc},{name:"Molecular Weight", value: moleWeight}];

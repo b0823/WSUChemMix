@@ -225,7 +225,8 @@ router.get('/Experiment/:classID/:studentID', function(req, res) {
                   res.render('Experiment', {
                       "title": 'Class ' + req.params.classID,
                       "budget": element.budgetLeft,
-                      "inputParams": docs[0].inputParams
+                      "inputParams": docs[0].inputParams,
+                      "Result": element.lastResult
                   });
                   notFound = false;
                 }
@@ -254,19 +255,23 @@ router.post('/Experiment/:classID/:studentID' ,function(req, res){
                   var newBudget = element.budgetLeft-1;
 
                   var theirParams = JSON.parse(req.body.inputs);
-
+                  var result = MATHFUNCTIONS.mainFunction(theirParams, docs[0].params, docs[0].inputParams);
+                  
                   collection.update( {classID : req.params.classID , "students.studentID" : element.studentID } , {$inc : {"students.$.budgetLeft" : -1} } ,   function (err, result) {
                     if (err) throw err;
-                 })                  
+                  }) 
 
-                    var result = MATHFUNCTIONS.mainFunction(theirParams, docs[0].params, docs[0].inputParams);
-                    
-                    res.render('Experiment', {
-                        "title": 'Class ' + req.params.classID,
-                        "budget": newBudget,
-                        "inputParams": docs[0].inputParams,
-                        "Result" : result
-                    });
+                  collection.update( {classID : req.params.classID , "students.studentID" : element.studentID } , {$set : {"students.$.lastResult" : result} } ,   function (err, result) {
+                    if (err) throw err;
+                  })
+
+                    res.redirect('/Experiment/' + req.params.classID + '/' + req.params.studentID);
+                    // res.render('Experiment', {
+                    //     "title": 'Class ' + req.params.classID,
+                    //     "budget": newBudget,
+                    //     "inputParams": docs[0].inputParams,
+                    //     "Result" : result
+                    // });
                   notFound = false;
                 }
             };
