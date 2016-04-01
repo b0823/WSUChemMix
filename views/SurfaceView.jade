@@ -1,0 +1,70 @@
+
+extends GraphingLayout
+
+block content
+	script(type='text/javascript').
+		$(window).bind("load", function() {
+			var data = !{JSON.stringify(inputData)}
+
+			var options = standardOptions();
+
+			for (var i = 0; i < data.length; i++) {
+				var element = data[i]
+				var inpData = recievedData(element.data);
+				$('#Graph_' + i).width(400)
+				$('#Graph_' + i).height(400)
+				var graph = new vis.Graph3d(document.getElementById('Graph_' + i), inpData, options);
+
+			};
+
+		});
+
+		function goBack() {
+			window.history.back();
+		}
+		function standardOptions(){
+			var element = JSON.parse('{"width":"100%","height":"100%","style":"surface","showAnimationControls":true,"showGrid":true,"showPerspective":true,"showShadow":false,"keepAspectRatio":true,"verticalRatio":"0.5","animationInterval":"1000","xLabel":"test","yLabel":"test","zLabel":"","filterLabel":"","legendLabel":"","animationPreload":false,"animationAutoStart":false}');
+			element.xLabel = window.location.href.split("/").reverse()[1]
+			element.yLabel = window.location.href.split("/").reverse()[0]
+			return element;
+		}
+		function recievedData(inputData){
+			var data = new vis.DataSet();
+			for (var i = 0; i < inputData.length; i++) {
+				line = inputData[i];
+				data.add({x:parseFloat(inputData[i][0]),
+					y:parseFloat(inputData[i][1]),
+					z:parseFloat(inputData[i][2]),
+					style:parseFloat(inputData[i][3])});
+			};
+			return data;
+		}
+		String.prototype.replaceAll = function(target, replacement) {
+		  return this.split(target).join(replacement);
+		};
+		function removeSpaces(target) {
+			return target.replaceAll(' ', '')
+		};
+
+	html
+		body
+			div(style='position: relative; overflow: hidden; width: 100%; height: 100%; cursor: auto;')
+				center
+					h1="Surfaces"
+					button(onclick='goBack()') Go Back
+				div(id='graphContainer')
+
+				each graph, i in inputData
+					div(style='position: relative; overflow: hidden; width: 100%; height: 100%; cursor: auto;')
+						td(rowspan='2')
+							center
+								h1= graph.name
+								div(id="Graph_" + i, style='position: relative; overflow: hidden; width: 100%; height: 100%; cursor: auto;')
+									div(style='position: relative; overflow: hidden; width: 100%; height: 100%; cursor: auto;')
+										canvas(style='position: relative; width: 100%; height: 100%;', width='604', height='600')
+											div(style='color: red; font-weight: bold; padding: 10px;') Error: your browser does not support HTML canvas Try Chrome.
+										div(style='position: absolute; bottom: 0px; left: 0px; width: 584px;')
+
+
+
+

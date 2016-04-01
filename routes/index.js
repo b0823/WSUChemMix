@@ -80,6 +80,31 @@ router.get('/EditClass/:classID', restrict, function(req, res) {
 
 });
 
+router.get('/EditClass/:classID/:varOne/:varTwo', restrict, function(req, res) {
+  var collection = db.classes;
+  var creator = req.session.user.username;          
+  var goal = req.params.classID;
+
+  collection.find({"classID":goal}).toArray(function(err,doc){
+    if(doc.length == 0 || doc[0].instructorID != creator){
+      res.render('ClassList', { title: 'Instructor Panel', classList:docs });
+    } else {
+      var myClass = doc[0];
+
+
+      var inputData = MATHFUNCTIONS.generateSurface(myClass.params, myClass.inputParams, req.params.varOne, req.params.varTwo);
+
+      // console.log(inputData)
+
+
+      res.render('SurfaceView', { 
+           "inputData" : inputData
+      });
+    }
+  }); 
+
+});
+
 router.get('/ClassList', restrict, function(req, res, next) {
 
   var collection = db.classes;
@@ -255,7 +280,7 @@ router.post('/Experiment/:classID/:studentID' ,function(req, res){
                   var newBudget = element.budgetLeft-1;
 
                   var theirParams = JSON.parse(req.body.inputs);
-                  var result = MATHFUNCTIONS.mainFunction(theirParams, docs[0].params, docs[0].inputParams);
+                  var result = MATHFUNCTIONS.mainFunction(theirParams, docs[0].params, docs[0].inputParams, true);
                   
                   collection.update( {classID : req.params.classID , "students.studentID" : element.studentID } , {$inc : {"students.$.budgetLeft" : -1} } ,   function (err, result) {
                     if (err) throw err;
