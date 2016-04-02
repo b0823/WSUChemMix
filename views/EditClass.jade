@@ -73,8 +73,10 @@ block content
 			};
 		}
 		var delSelected = function(){
-			if(hasDeleted)
+			if(hasDeleted){
 				$(".active").remove();
+				return;
+			}
 			if(window.confirm("Are you sure you want to delete this Student?")){
 				$(".active").remove();
 				hasDeleted = true;
