@@ -43,7 +43,7 @@ block content
 			}
 			for (var i = 0; i < listElements.length; i++) {
 				var element = listElements[i];
-				studList.push({studentID:element.text,budgetLeft:parseInt(element.id)})
+				studList.push({studentID:element.text.replaceAll(" ",""),budgetLeft:parseInt(element.id)})
 			};
 
 			var locSplit =  location.href.split("/").reverse();
@@ -72,6 +72,9 @@ block content
 				addTo(lst[i])
 			};
 		}
+		String.prototype.replaceAll = function(target, replacement) {
+		  return this.split(target).join(replacement);
+		};
 		var delSelected = function(){
 			if(hasDeleted){
 				$(".active").remove();
