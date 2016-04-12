@@ -241,7 +241,6 @@ router.get('/Experiment/:classID/:studentID', function(req, res) {
     collection.find({"classID":req.params.classID}).toArray(function(err,docs){
         if(docs.length == 0){
             //Not found in DB.
-            console.log("CLASS NOT FOUND " + req.params.classID);
             res.redirect('/StudentJoin');
         } else {
             var notFound = true;
@@ -260,7 +259,6 @@ router.get('/Experiment/:classID/:studentID', function(req, res) {
             };
             if(notFound){
               res.redirect('/StudentJoin');
-              console.log("STUDENT " + req.params.studentID + " NOT FOUND")
             }
         }
     });
